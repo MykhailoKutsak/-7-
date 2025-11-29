@@ -1,0 +1,79 @@
+import java.util.Scanner;
+
+public class Main3 {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int[][] matrix = new int[5][5];
+
+        System.out.println("Введіть ел матриці 5x5:");
+
+        // Введення даних
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                matrix[i][j] = sc.nextInt();
+            }
+        }
+
+        // Викликаємо метод знаходження визначника
+        int result = det(matrix);
+
+        System.out.println("Визначник матриці: " + result);
+    }
+
+    static int det(int[][] a) {
+
+        int n = a.length;
+
+        //Є формула, згідно якої визначник розраховується через суму елементів рядка, помножених на їх мінори з чергуванням знаків
+        // Це виглядає десь як det(A)=a1,1*M1,1-a1,2*M1,2 і тд, де M буде мінором
+        //У результаті всі мінори зводяться до матриць 1х1 і 2х2
+
+        // 1x1
+        if (n == 1) {
+            return a[0][0];
+        }
+
+        //2x2 = ad - bc
+        if (n == 2) {
+            return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+        }
+
+        int determinant = 0;
+
+        for (int j = 0; j < n; j++) {
+
+            int[][] m = minor(a, 0, j);
+
+            int sign = (j % 2 == 0) ? 1 : -1;
+
+            determinant += sign * a[0][j] * det(m);
+        }
+
+        return determinant;
+    }
+
+    // Отримння мінору
+    static int[][] minor(int[][] a, int rowToRemove, int colToRemove) {
+
+        int n = a.length;
+        int[][] m = new int[n - 1][n - 1];
+
+        int r = 0; // індекс рядка у мінорі
+        for (int i = 0; i < n; i++) {
+            if (i == rowToRemove) continue; // пропускаємо рядок
+
+            int c = 0; // індекс стовпця у мінорі
+            for (int j = 0; j < n; j++) {
+                if (j == colToRemove) continue; // пропускаємо стовпець
+
+                m[r][c] = a[i][j];
+                c++;
+            }
+            r++;
+        }
+
+        return m;
+    }
+}
